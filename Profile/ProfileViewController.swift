@@ -9,40 +9,60 @@ import UIKit
 
 class ProfileViewController: UIViewController {
 
-    let profileHeaderView = ProfileHeaderView()
+    private let profileHeaderView: UIView = {
+         let view = ProfileHeaderView()
+         view.translatesAutoresizingMaskIntoConstraints = false
+         return view
+     }()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.addSubview(profileHeaderView)
-        self.setupView()
-        self.profileHeaderViewSetup()
-    }
+     private var newButton: UIButton = {
+         let newButton = UIButton()
+         newButton.setTitle("New button", for: .normal)
+         newButton.backgroundColor = .systemBlue
+         newButton.titleLabel?.textColor = .white
+         newButton.translatesAutoresizingMaskIntoConstraints = false
+         return newButton
+     }()
 
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        view.addSubview(profileHeaderView)
-        profileHeaderView.frame = view.frame
-    }
+     override func viewDidLoad() {
+         super.viewDidLoad()
+         self.setupView()
+         layoutProfileHeaderView()
+     }
 
-    private func customizeNavBar() {
-        let appearance = UINavigationBarAppearance()
-        appearance.backgroundColor = .systemGray5
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-       }
+     override func viewWillLayoutSubviews() {
+         super.viewWillLayoutSubviews()
+     }
 
-       private func setupView() {
-           self.view.backgroundColor = .lightGray
-           self.navigationItem.title = "Profile"
-           self.customizeNavBar()
-       }
+     private func customizeNavBar() {
+         let appearance = UINavigationBarAppearance()
+         appearance.backgroundColor = .systemGray5
+         navigationController?.navigationBar.standardAppearance = appearance
+         navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        }
 
-       private func profileHeaderViewSetup() {
-           profileHeaderView.translatesAutoresizingMaskIntoConstraints = false
-           profileHeaderView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-           profileHeaderView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-           profileHeaderView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-           profileHeaderView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+     private func setupView() {
+         self.view.backgroundColor = .lightGray
+         self.customizeNavBar()
+     }
+
+     private func layoutProfileHeaderView() {
+
+         [profileHeaderView, newButton].forEach{view.addSubview($0)}
+
+         profileHeaderView.frame = view.frame
+
+         NSLayoutConstraint.activate([
+         profileHeaderView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+         profileHeaderView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+         profileHeaderView.heightAnchor.constraint(equalToConstant: 220),
+         profileHeaderView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
+         ])
+
+         NSLayoutConstraint.activate([
+             newButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+             newButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+             newButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
+         ])
      }
 }

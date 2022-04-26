@@ -9,22 +9,52 @@ import UIKit
 
 class FeedViewController: UIViewController {
 
-    var post = Post(title: "Просмотр поста") //  создали экз структуры
+    var post = Post(title: "Просмотр поста")
 
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.backgroundColor = .cyan
+        stackView.axis = .vertical // вертикальная растяжка вьюх, можно выбрать горизонтал
+        stackView.distribution = .equalCentering
+        stackView.spacing = 10
+        return stackView
+    }()
+
+    private lazy var buttonOne: UIButton = {
+        let buttonOne = UIButton()
+        buttonOne.setTitle("Press this button", for: .normal)
+        buttonOne.backgroundColor = .black
+        buttonOne.addTarget(self, action: #selector(tapAction), for: .touchUpInside)
+        return buttonOne
+    }()
+
+    private lazy var buttonTwo: UIButton = {
+        let buttonTwo = UIButton()
+        buttonTwo.setTitle("No, press this button", for: .normal)
+        buttonTwo.backgroundColor = .black
+        buttonTwo.addTarget(self, action: #selector(tapAction), for: .touchUpInside)
+        return buttonTwo
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemPink
-        makeButton()
+        view.backgroundColor = .cyan
+        layout()
     }
 
-    private func makeButton() {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 200, height: 40))
-        button.center = view.center
-        button.setTitle("Посмотреть пост", for: .normal)
-        button.backgroundColor = .black
-        button.addTarget(self, action: #selector(tapAction), for: .touchUpInside)
-        view.addSubview(button)
+    private func layout() {
+        view.addSubview(stackView)
+        [buttonOne, buttonTwo].forEach { stackView.addArrangedSubview($0)}
+
+        stackView.setCustomSpacing(10, after: buttonOne)
+
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 220),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            stackView.heightAnchor.constraint(equalToConstant: 100),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
     }
 
     @objc private func tapAction() {
@@ -32,4 +62,5 @@ class FeedViewController: UIViewController {
         vc.titlePost = post.title
         navigationController?.pushViewController(vc, animated: true)
     }
+
 }
