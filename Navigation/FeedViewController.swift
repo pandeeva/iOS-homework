@@ -9,8 +9,6 @@ import UIKit
 
 class FeedViewController: UIViewController {
 
-    var post = Post(title: "Просмотр поста")
-
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -59,7 +57,6 @@ class FeedViewController: UIViewController {
 
     @objc private func tapAction() {
         let vc = PostViewController()
-        vc.titlePost = post.title
         navigationController?.pushViewController(vc, animated: true)
     }
 
