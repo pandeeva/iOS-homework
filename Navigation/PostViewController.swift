@@ -8,7 +8,6 @@
 import UIKit
 
 class PostViewController: UIViewController {
-
     var titlePost: String?
 
     override func viewDidLoad() {

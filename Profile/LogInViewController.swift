@@ -188,10 +188,8 @@ class LogInViewController: UIViewController {
             logInBotton.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
             logInBotton.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
             logInBotton.heightAnchor.constraint(equalToConstant: 50)
-
         ])
     }
-
 }
 
 extension LogInViewController: UITextFieldDelegate {
@@ -199,6 +197,4 @@ extension LogInViewController: UITextFieldDelegate {
         self.view.endEditing(true)
         return false
     }
-
-
 }

@@ -9,57 +9,66 @@ import UIKit
 
 class ProfileViewController: UIViewController {
 
-    private let profileHeaderView: UIView = {
-         let view = ProfileHeaderView()
-         view.translatesAutoresizingMaskIntoConstraints = false
-         return view
-     }()
+    private let post = Post.makeMockModelPost()
 
-     private var newButton: UIButton = {
-         let newButton = UIButton()
-         newButton.setTitle("New button", for: .normal)
-         newButton.backgroundColor = .systemBlue
-         newButton.titleLabel?.textColor = .white
-         newButton.translatesAutoresizingMaskIntoConstraints = false
-         return newButton
-     }()
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(PostTableViewCell.self, forCellReuseIdentifier: PostTableViewCell.identifier )
+        return tableView
+    }()
 
-     override func viewDidLoad() {
-         super.viewDidLoad()
-         self.setupView()
-         layoutProfileHeaderView()
-     }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        layout()
+    }
 
-     override func viewWillLayoutSubviews() {
-         super.viewWillLayoutSubviews()
-     }
+    private func layout() {
 
-     private func customizeNavBar() {
-         let appearance = UINavigationBarAppearance()
-         appearance.backgroundColor = .systemGray5
-         navigationController?.navigationBar.standardAppearance = appearance
-         navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        }
+        view.addSubview(tableView)
 
-     private func setupView() {
-         self.view.backgroundColor = .lightGray
-         self.customizeNavBar()
-     }
-
-     private func layoutProfileHeaderView() {
-
-         [profileHeaderView, newButton].forEach{view.addSubview($0)}
-
-         profileHeaderView.frame = view.frame
-
-         NSLayoutConstraint.activate([
-         profileHeaderView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-         profileHeaderView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-         profileHeaderView.heightAnchor.constraint(equalToConstant: 220),
-         profileHeaderView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-         newButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-         newButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-         newButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
-         ])
-     }
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
 }
+
+// MARK: - UITableViewDataSource
+extension ProfileViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return post.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return post[section].count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.identifier, for: indexPath) as! PostTableViewCell
+        cell.setupCell(post[indexPath.section][indexPath.row])
+        return cell
+    }
+
+}
+
+//MARK: - UITableViewDelegate
+extension ProfileViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = ProfileHeaderView()
+        return header
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+          return 220
+      }
+}
+
