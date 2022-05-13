@@ -43,7 +43,7 @@ class PhotosTableViewCell: UITableViewCell {
 
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.translatesAutoresizingMaskIntoConstraints = false
-//        collection.register(PhotosCollectionProfileViewCell.self, forCellWithReuseIdentifier: PhotosCollectionProfileViewCell.identifier)
+        collection.register(PhotosCollectionProfileViewCell.self, forCellWithReuseIdentifier: PhotosCollectionProfileViewCell.identifier)
         collection.backgroundColor = .clear
         return collection
     }()
@@ -96,10 +96,9 @@ extension PhotosTableViewCell: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotosCollectionProfileViewCell.identifier, for: indexPath) as! PhotosCollectionProfileViewCell
-//        cell.setupCell(photos[indexPath.item])
-  //      return cell
-        return UICollectionViewCell()
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotosCollectionProfileViewCell.identifier, for: indexPath) as! PhotosCollectionProfileViewCell
+        cell.setupCell(photos[indexPath.item])
+        return cell
     }
 
 
