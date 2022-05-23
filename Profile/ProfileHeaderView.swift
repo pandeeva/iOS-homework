@@ -100,8 +100,13 @@ class ProfileHeaderView: UIView {
     }()
 
     @objc private func buttonPressed() {
+        guard let textField = statusTextField.text else { return }
+        if textField.isEmpty {
+            statusTextField.shakeField()
+        } else {
         statusLabel.text = statusText
         print (statusLabel.text ?? "nil")
+        }
     }
 
     @objc private func statusLabelChanged (_ textField: UITextField) {
