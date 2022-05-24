@@ -8,6 +8,6 @@
 import Foundation
 
 struct LoginBase {
-    let basicUserName = "1"
+    let basicUserName = "test@icloud.com"
     let basicUserPassword = "12345678"
 }
