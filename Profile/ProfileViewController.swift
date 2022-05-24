@@ -93,13 +93,21 @@ extension ProfileViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             return cell
         }
-       // tableView.sectionHeaderHeight = 0
         let cell = tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.identifier, for: indexPath) as! PostTableViewCell
         cell.setupCell(posts[indexPath.row])
 
         cell.selectionStyle = .none
         return cell
 
+    }
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            tableView.beginUpdates()
+            posts.remove(at: indexPath.row )
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
     }
 }
 
@@ -124,6 +132,13 @@ extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? 220 : 0
       }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailVC = PostOpenedViewController()
+        detailVC.setupVC(post: posts[indexPath.row])
+        navigationController?.pushViewController(detailVC, animated: true)
+
+    }
 }
 
 
@@ -134,5 +149,15 @@ extension ProfileViewController: PhotosTableViewCellDelegate {
         navigationController?.pushViewController(photosVC, animated: true)
     }
 
-
 }
+
+//extension ProfileViewController: TapPostImageDelegate {
+//    func postImagePressed(author: String, description: String, image: UIImage) {
+//        let view = PostOpenedViewController()
+//        view.postAutorLabel.text = author
+//        view.postImageView.image = image
+//        view.descriptionLabel.text = description
+//        navigationController?.pushViewController(view, animated: true)
+//    }
+//}
+

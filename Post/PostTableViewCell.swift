@@ -9,6 +9,9 @@ import UIKit
 
 class PostTableViewCell: UITableViewCell {
 
+
+    private var examplePost = Post(author: "", description: "", image: UIImage(named: "Новость1")!, likes: 1, views: 1)
+
     private let whiteView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -31,7 +34,8 @@ class PostTableViewCell: UITableViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = .black
         imageView.contentMode = .scaleAspectFit
-        //imageView.clipsToBounds = true //все, что будет выходить за размеры вьюхи будет обрезаться
+        imageView.isUserInteractionEnabled = true
+        imageView.clipsToBounds = true
         return imageView
     }()
 
@@ -39,7 +43,7 @@ class PostTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = .clear
-        label.numberOfLines = 0 //будет столько строк текстаБ сколько нужно
+        label.numberOfLines = 2 //будет столько строк текста, сколько нужно, если будет 0
         label.textColor = .systemGray
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         return label
@@ -50,6 +54,7 @@ class PostTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .black
         label.textAlignment = .left
+        label.isUserInteractionEnabled = true
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         return label
     }()
@@ -59,6 +64,7 @@ class PostTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .black
         label.textAlignment = .right
+        label.isUserInteractionEnabled = true
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         return label
     }()
@@ -75,15 +81,35 @@ class PostTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         layout()
+        setupGestures()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+
+    private func setupGestures() {
+        let tapLike = UITapGestureRecognizer(target: self, action: #selector(likeAction))
+        likesLabel.addGestureRecognizer(tapLike)
+    }
+
+    @objc private func likeAction() {
+        UIView.animate(withDuration: 0.5,
+                       delay: 0.0,
+                       usingSpringWithDamping: 1.0,
+                       initialSpringVelocity: 0.0,
+                       options: .curveEaseInOut) {
+            self.examplePost.likes += 1
+            self.likesLabel.text = "Likes: \(self.examplePost.likes)"
+        }
+    }
+
+
     func setupCell(_ post: Post) {
+        examplePost = post
         postAutorLabel.text = post.author
-        postImageView.image = UIImage(named: post.image)
+        postImageView.image = post.image
         descriptionLabel.text = post.description
         likesLabel.text = "Likes: \(post.likes)"
         viewsLabel.text = "Views: \(post.views)"
