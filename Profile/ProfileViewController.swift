@@ -9,7 +9,7 @@ import UIKit
 
 class ProfileViewController: UIViewController {
 
-    private let photoNameArray: [String] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]
+     private let photoNameArray: [String] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]
 
 
      private var section: [String] {["Photos", "Post"]}
@@ -68,16 +68,13 @@ class ProfileViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-
     }
-
 }
 
 // MARK: - UITableViewDataSource
 extension ProfileViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
        return section.count
-
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -93,13 +90,20 @@ extension ProfileViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             return cell
         }
-       // tableView.sectionHeaderHeight = 0
         let cell = tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.identifier, for: indexPath) as! PostTableViewCell
         cell.setupCell(posts[indexPath.row])
 
         cell.selectionStyle = .none
         return cell
+    }
 
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            tableView.beginUpdates()
+            posts.remove(at: indexPath.row )
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
     }
 }
 
@@ -113,17 +117,21 @@ extension ProfileViewController: UITableViewDelegate {
         tableView.sectionHeaderHeight = 0
 
         return section == 0 ? profileHeaderView : nil
-
     }
 
     func tableView(_ tableView: UITableView,
     didEndDisplayingHeaderView view: UIView, forSection section: Int ) {
-
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? 220 : 0
       }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailVC = PostOpenedViewController()
+        detailVC.setupVC(post: posts[indexPath.row])
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
 }
 
 
@@ -133,6 +141,6 @@ extension ProfileViewController: PhotosTableViewCellDelegate {
         photosVC.photos = photoNameArray
         navigationController?.pushViewController(photosVC, animated: true)
     }
-
-
 }
+
+

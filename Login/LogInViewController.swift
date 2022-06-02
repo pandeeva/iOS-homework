@@ -13,6 +13,8 @@ class LogInViewController: UIViewController {
 
     private let notificationCenter = NotificationCenter.default
 
+   private lazy var loginAndPassword = LoginBase()
+
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -52,7 +54,6 @@ class LogInViewController: UIViewController {
         loginField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: loginField.frame.height))
         loginField.backgroundColor = .systemGray6
         loginField.placeholder = "Email or phone"
-        //loginField.layer.borderColor = UIColor.lightGray.cgColor
         loginField.leftViewMode = .always
         loginField.textColor = .black
         loginField.font = .systemFont(ofSize: 16)
@@ -88,7 +89,15 @@ class LogInViewController: UIViewController {
         return button
     }()
 
-
+    private let warningLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Пароль не может быть менее 8 символов"
+        label.textColor = .red
+        label.isHidden = true
+        label.font = .systemFont(ofSize: 12, weight: .medium)
+        return label
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,7 +135,41 @@ class LogInViewController: UIViewController {
 
     @objc private func onClick() {
         let vc = ProfileViewController()
-        navigationController?.pushViewController(vc, animated: true)
+
+        guard let login = loginField.text else { return }
+        guard let password = passwordField.text else { return }
+
+        if login.isEmpty && password.isEmpty {
+            loginField.shakeField()
+            passwordField.shakeField()
+        } else if login.isEmpty {
+            loginField.shakeField()
+        } else if password.isEmpty {
+            passwordField.shakeField()
+        } else {
+            if password.count < 8 {
+                warningLabel.isHidden = false
+            } else {
+                warningLabel.isHidden = true
+                if (loginField.text != loginAndPassword.basicUserName) && (passwordField.text != loginAndPassword.basicUserPassword) {
+                    showErrorAlert()
+                } else if loginField.text != loginAndPassword.basicUserName{
+                    showErrorAlert()
+                } else if passwordField.text != loginAndPassword.basicUserPassword {
+                    showErrorAlert()
+                } else {
+                    navigationController?.pushViewController(vc, animated: true)
+                    warningLabel.isHidden = true
+                }
+            }
+        }
+    }
+
+    private func showErrorAlert() {
+            let alert = UIAlertController(title: "Неверный логин или пароль", message: nil , preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Ок", style: .default)
+            alert.addAction(cancelAction)
+            present(alert, animated: true)
     }
 
     private func hexStringToUIColor (hex:String) -> UIColor {
@@ -158,7 +201,7 @@ class LogInViewController: UIViewController {
 
         [loginField, passwordField].forEach {stackView.addArrangedSubview($0)}
 
-        [vcImageView, stackView, logInBotton].forEach {contentView.addSubview($0)}
+        [vcImageView, stackView, logInBotton, warningLabel].forEach {contentView.addSubview($0)}
 
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -187,7 +230,10 @@ class LogInViewController: UIViewController {
             logInBotton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 16),
             logInBotton.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
             logInBotton.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
-            logInBotton.heightAnchor.constraint(equalToConstant: 50)
+            logInBotton.heightAnchor.constraint(equalToConstant: 50),
+
+            warningLabel.topAnchor.constraint(equalTo: stackView.bottomAnchor),
+            warningLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
         ])
     }
 }
@@ -198,3 +244,5 @@ extension LogInViewController: UITextFieldDelegate {
         return false
     }
 }
+
+

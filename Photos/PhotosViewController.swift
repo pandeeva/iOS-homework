@@ -29,7 +29,6 @@ class PhotosViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         navigationController?.isNavigationBarHidden = false
-        //navigationItem.title = "Photo Gallery"
         self.title = "Photo Gallery"
         layout()
     }
@@ -40,6 +39,7 @@ class PhotosViewController: UIViewController {
     }
 
     private func layout() {
+
         view.addSubview(photoCollection)
 
         NSLayoutConstraint.activate([
@@ -51,7 +51,7 @@ class PhotosViewController: UIViewController {
         ])
     }
 }
-
+// MARK: - UICollectionViewDataSource
 extension PhotosViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count
@@ -64,6 +64,7 @@ extension PhotosViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - UICollectionViewDelegateFlowLayout
 extension PhotosViewController: UICollectionViewDelegateFlowLayout {
     var sideInset: CGFloat { return 8 }
 
@@ -82,5 +83,41 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         UIEdgeInsets(top: sideInset, left: sideInset, bottom: sideInset, right: sideInset)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        presentPhoto(indexOfPhoto: indexPath.item)
+    }
+}
+
+// MARK: - Present photo in the galery
+extension PhotosViewController {
+    func presentPhoto(indexOfPhoto: Int) {
+        lazy var photoImageView: UIImageView = {
+            lazy var imageView = UIImageView()
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.image = photoGalery[indexOfPhoto]
+            imageView.contentMode = .scaleAspectFit
+            imageView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
+            imageView.isUserInteractionEnabled = true
+            return imageView
+        }()
+
+        view.addSubview(photoImageView)
+
+        NSLayoutConstraint.activate([
+            photoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            photoImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            photoImageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            photoImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+
+        lazy var tapToImage = UITapGestureRecognizer(target: self, action: #selector(dismissFullscreenImage))
+        photoImageView.addGestureRecognizer(tapToImage)
+
+    }
+
+    @objc func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
+        sender.view?.removeFromSuperview()
     }
 }
